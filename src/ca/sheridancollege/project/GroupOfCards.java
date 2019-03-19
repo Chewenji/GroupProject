@@ -2,56 +2,86 @@
  * SYST 17796 Project Winter 2019 Base code.
  * Students can modify and extend to implement their game.
  * Add your name as a modifier and the date!
+ * Liu Zexuan, Chen Wenjing, Sultani Yassin
  */
 package ca.sheridancollege.project;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
 
 /**
- * A concrete class that represents any grouping of cards for a Game.
- * HINT, you might want to subclass this more than once.
- * The group of cards has a maximum size attribute which is flexible for reuse.
- * @author dancye
+ *
+ * @author Administrator
  */
-public class GroupOfCards 
-{
+public class GroupOfCards {
+    //max 52 cards
+    public static final int MAX_SIZE=52;
    
-    //The group of cards, stored in an ArrayList
-    private ArrayList <Card> cards;
-    private int size;//the size of the grouping
+    protected Stack cards;
     
-    public GroupOfCards(int givenSize)
-    {
-        size = givenSize;
+    //the list of drawn Cards
+    protected List drawnCards;
+    
+    
+    protected Random random;
+    
+    
+    public GroupOfCards() {
+        
+        cards=new Stack();
+        
+        for (int i=1;i<=MAX_SIZE;i++) {
+            cards.push(new Card(i));
+        }
+        
+        
+        drawnCards=new ArrayList();
+        random=new Random();
+        
+        shuffle();
     }
     
     /**
-     * A method that will get the group of cards as an ArrayList
-     * @return the group of cards.
+     * Returns the number of CARDS remaining
      */
-    public ArrayList<Card> showCards()
-    {
-        return cards;
+    public int getSize(){
+        return cards.size()+drawnCards.size();
+    } 
+    
+    //Random shuffle
+    private void shuffle() {
+     
+        while (!cards.isEmpty()){
+                drawnCards.add(cards.pop());
+        }
+        
+        //Put the Cards back randomly into the stack
+        Object card=null;
+        while (!drawnCards.isEmpty()){
+            card=drawnCards.remove(Math.abs(random.nextInt()%drawnCards.size()));
+            cards.push(card);
+        }
     }
     
-    public void shuffle()
-    {
-        Collections.shuffle(cards);
+    /**
+     * getCard
+     */
+    public Card getCard(){
+        if(getSize()==0){
+            
+            
+            for (int i=1;i<=MAX_SIZE;i++) {
+            cards.push(new Card(i));
+            }
+            
+            // shuffle again
+            shuffle();
+        }
+        
+        return (Card)cards.pop();
     }
+    
+}
 
-    /**
-     * @return the size of the group of cards
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * @param givenSize the max size for the group of cards
-     */
-    public void setSize(int givenSize) {
-        size = givenSize;
-    }
-    
-}//end class
